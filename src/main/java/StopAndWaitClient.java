@@ -1,4 +1,3 @@
-package PACKAGE_NAME;
-
-public class StopAndWaitClient {
+public interface StopAndWaitClient {
+    boolean sendMessage(String data);
 }

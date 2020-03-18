@@ -1,5 +1,5 @@
 interface UDPClient {
-    boolean sendMessage();
+    boolean sendMessage(String mes);
     String recieveMessage();
     boolean closeConnection();
 }

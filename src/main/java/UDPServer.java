@@ -23,5 +23,5 @@ interface UDPServer {
      *
      * @return boolean denoting true if the connection was closed
      */
-    boolean closeConnection()
+    boolean closeConnection();
 }
