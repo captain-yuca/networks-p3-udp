@@ -1,4 +1,4 @@
-interface UDPServer {
+public interface UDPServer {
 
     /**
      * Listens and recieves any message that arrives in the channel.

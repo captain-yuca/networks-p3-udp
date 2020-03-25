@@ -1,5 +1,5 @@
-interface StopAndWaitServer extends Runnable {
+interface StopAndWaitServer {
 
-    void recieveMessage();
+    void receiveMessage();
     boolean closeConnection();
 }
