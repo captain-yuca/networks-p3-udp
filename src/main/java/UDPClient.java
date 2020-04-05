@@ -1,5 +1,7 @@
+import java.io.IOException;
+
 interface UDPClient {
     boolean sendMessage(String mes);
-    String recieveMessage();
-    boolean closeConnection();
+    String receiveMessage() throws IOException;
+    boolean closeConnection() throws IOException;
 }
