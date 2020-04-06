@@ -8,9 +8,9 @@ public class SAWServerMain {
         final String divider = "?!+";
 
 
-        UDPServer udpServer = null;
+        UDPClient udpServer = null;
         try{
-          udpServer  = new MyUDPServer(serverAddress, 3000);
+          udpServer  = new MyUDP(serverAddress, 3000);
         } catch (IOException e){
             System.out.println("Error Happened!");
         }

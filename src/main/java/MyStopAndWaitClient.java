@@ -4,8 +4,8 @@ import java.util.concurrent.*;
 
 class Waiter implements Callable<String> {
 
-    MyUDPClient client;
-    public Waiter(MyUDPClient client){
+    UDPClient client;
+    public Waiter(UDPClient client){
         this.client = client;
     }
 
@@ -18,14 +18,14 @@ class Waiter implements Callable<String> {
 
 
 public class MyStopAndWaitClient implements StopAndWaitClient {
-    MyUDPClient myUdpClientClient;
+    UDPClient myUdpClientClient;
     int index;
     int timeOut;
     int timeOutLimit;
     String divider;
 
     public MyStopAndWaitClient(String address, int portNumber, String divider) throws IOException {
-        this.myUdpClientClient = new MyUDPClient(address, portNumber);
+        this.myUdpClientClient = new MyUDP(address, portNumber);
         this.index = 0;
         this.timeOut = 1;
         this.timeOutLimit = 20;
@@ -38,19 +38,19 @@ public class MyStopAndWaitClient implements StopAndWaitClient {
         String frame = this.index + this.divider + data;
 
         while (!replied) {
-            this.myUdpClientClient.sendMessage(frame);
+            this.myUdpClientClient.sendMessage(frame, "127.0.0.1", 3000);
             ExecutorService executor = Executors.newSingleThreadExecutor();
             Future<String> future = executor.submit(new Waiter(this.myUdpClientClient));
             String ack = null;
             try{
                 ack = future.get(1, TimeUnit.SECONDS);
-                System.out.println(ack);
             }
             catch (TimeoutException e){
                 future.cancel(true);
                 this.timeOutLimit--;
-                System.out.println("Timeout sending again...");
+                System.out.println("[X] Timeout sending again...");
                 if (this.timeOutLimit == 0){
+                    this.timeOutLimit = 20;
                     return false;
                 }
             } catch (InterruptedException e) {
@@ -62,7 +62,7 @@ public class MyStopAndWaitClient implements StopAndWaitClient {
             }
 
             if (ack != null && ack.equals(Integer.toString(this.index))){
-                System.out.println("ACK Received");
+                System.out.println("[X] ACK Received");
                 replied = true;
                 this.index++;
             }
