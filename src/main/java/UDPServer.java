@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public interface UDPServer {
 
     /**
@@ -6,7 +8,7 @@ public interface UDPServer {
      *
      * @return      The bytes recieved decoded as a String
      */
-    String recieveMessage();
+    String recieveMessage() throws IOException;
 
     /**
      * Sends through the channel a response that is meant as a reply from the recieved message.
@@ -16,12 +18,12 @@ public interface UDPServer {
      *
      * @param  data the data to be sent through the channel
      */
-    void sendMessage(String data);
+    boolean sendMessage(String data) throws IOException;
 
     /**
      * Shuts down the server
      *
      * @return boolean denoting true if the connection was closed
      */
-    boolean closeConnection();
+    boolean closeConnection() throws IOException;
 }

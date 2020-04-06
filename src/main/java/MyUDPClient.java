@@ -2,13 +2,14 @@ import java.net.*;
 import java.io.*;
 import java.util.Random;
 
-public class UDP implements UDPClient{
+public class MyUDPClient implements UDPClient{
 
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
+    private String divider;
 
-    public UDP(String address, int portNumber) throws IOException {
+    public MyUDPClient(String address, int portNumber) throws IOException {
         this.clientSocket = new Socket(address, portNumber);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));

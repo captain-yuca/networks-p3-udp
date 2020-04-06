@@ -1,13 +1,11 @@
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.*;
 
 
 class Waiter implements Callable<String> {
 
-    UDP client;
-    public Waiter(UDP client){
+    MyUDPClient client;
+    public Waiter(MyUDPClient client){
         this.client = client;
     }
 
@@ -19,18 +17,19 @@ class Waiter implements Callable<String> {
 }
 
 
-public class SAWC implements StopAndWaitClient {
-    UDP udpClient;
+public class MyStopAndWaitClient implements StopAndWaitClient {
+    MyUDPClient myUdpClientClient;
     int index;
     int timeOut;
     int timeOutLimit;
     String divider;
 
-    public SAWC(String address, int portNumber) throws IOException {
-        this.udpClient = new UDP(address, portNumber);
+    public MyStopAndWaitClient(String address, int portNumber, String divider) throws IOException {
+        this.myUdpClientClient = new MyUDPClient(address, portNumber);
         this.index = 0;
         this.timeOut = 1;
         this.timeOutLimit = 20;
+        this.divider = divider;
     }
 
     @Override
@@ -39,12 +38,13 @@ public class SAWC implements StopAndWaitClient {
         String frame = this.index + this.divider + data;
 
         while (!replied) {
-            this.udpClient.sendMessage(frame);
+            this.myUdpClientClient.sendMessage(frame);
             ExecutorService executor = Executors.newSingleThreadExecutor();
-            Future<String> future = executor.submit(new Waiter(this.udpClient));
+            Future<String> future = executor.submit(new Waiter(this.myUdpClientClient));
             String ack = null;
             try{
                 ack = future.get(1, TimeUnit.SECONDS);
+                System.out.println(ack);
             }
             catch (TimeoutException e){
                 future.cancel(true);
@@ -72,6 +72,6 @@ public class SAWC implements StopAndWaitClient {
     }
 
     public void closeConnection() throws IOException {
-        this.udpClient.closeConnection();
+        this.myUdpClientClient.closeConnection();
     }
 }

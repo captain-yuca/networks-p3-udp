@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -31,11 +32,30 @@ public class MyStopAndWaitServer implements StopAndWaitServer {
     @Override
     public void receiveMessage() {
         while (true){
-            String frame = this.udpServer.recieveMessage();
+            System.out.println("Open to receive message!");
+            String frame = null;
+
+            try{
+                frame = this.udpServer.recieveMessage();
+            } catch(IOException e) {
+                System.out.println("this.udpServer.recieveMessage failed!");
+                return;
+            }
+            System.out.println(frame);
             if(!frame.equals("")){
                 String[] splittedFrame = frame.split(this.divider);
                 int messageId = Integer.parseInt(splittedFrame[0]);
-                this.udpServer.sendMessage(Integer.toString(messageId));
+                boolean isSent = false;
+                do{
+                    try{
+                        isSent = this.udpServer.sendMessage(Integer.toString(messageId));
+
+                    } catch(IOException err){
+                        System.out.println("this.udpServer.sendMessage failed!");
+                        return;
+                    }
+                }while(!isSent);
+
                 String message = splittedFrame[1];
                 System.out.println(message);
                 if(message.equals("exit")) break;
@@ -54,7 +74,11 @@ public class MyStopAndWaitServer implements StopAndWaitServer {
 
     @Override
     public boolean closeConnection() {
-        this.udpServer.closeConnection();
+        try{
+            this.udpServer.closeConnection();
+        } catch(IOException e){
+
+        }
         this.udpServer = null;
         return false;
     }

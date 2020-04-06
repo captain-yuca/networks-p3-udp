@@ -1,5 +1,6 @@
+import java.io.IOException;
 
-public class Main {
+public class SAWServerMain {
 
     public static void main(String[] args){
         final String serverAddress = "127.0.0.1";
@@ -7,7 +8,12 @@ public class Main {
         final String divider = "?!+";
 
 
-        UDPServer udpServer = new UDPServerStub(divider);
+        UDPServer udpServer = null;
+        try{
+          udpServer  = new MyUDPServer(serverAddress, 3000);
+        } catch (IOException e){
+            System.out.println("Error Happened!");
+        }
         StopAndWaitServer sAWServer = new MyStopAndWaitServer(serverAddress,
                 regexDivider,
                 udpServer);
